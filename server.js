@@ -35,23 +35,48 @@ app.use(cors(corsOptions))
 
 app.post('/signin', async (req, res) => {
     try{
-        const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(req.body.password,salt)
-        const user = User.create({username:req.body.username,password:hashedPassword});
-        res.status(201).send();
+        User.find({username:req.body.username}).then((data,err) => {
+            if(err){
+                res.status(500).send()
+            } else {
+                if(data[0]){
+                    res.status(200).json({message:"existusername"})
+                }else{
+                    const salt = bcrypt.genSalt();
+                        const hashPassword = bcrypt.hash(req.body.password,salt);
+                            const user = User.create({username:req.body.username,password:hashPassword});
+                                res.status(201).json({message:'usercreated'});
+                }
+            }
+        })
     }catch(e){
-        console.log("Error",e);
         res.status(500).send()
     }
 })
 
 app.post('/login', async (req, res) => {
     try{
-        const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(req.body.password,salt)
-        console.log(hashedPassword)
-        res.status(201).send();
-    }catch{
+        User.find({username:req.body.username}).then((data,err) => {
+            if(err){
+                res.status(500).send()
+            } else {
+                if(data[0]){//if user exist
+                    bcrypt.compare(req.body.password,data[0].password)
+                    .then((e) =>{
+                        if(e){
+                            res.status(200).json({message:"loginsucess"})
+                        } else {
+                            res.status(200).json({message:'wrongPassword'})
+                        }
+                    }).catch((e) => {
+                        res.status(500).send()
+                    })
+                } else { //if user is not exist
+                    res.status(201).json({message:"wrongUsername"})
+                }
+            }
+        });
+    }catch(e){
         res.status(500).send()
     }
 })
