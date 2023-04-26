@@ -43,7 +43,7 @@ app.post('/signin', async (req, res) => {
                     res.status(200).json({message:"existusername"})
                 }else{
                     const salt = bcrypt.genSalt();
-                        const hashPassword = bcrypt.hash(req.body.password,salt);
+                        const hashPassword = bcrypt.hash(req.body.password.toString(),salt);
                             const user = User.create({username:req.body.username,password:hashPassword});
                                 res.status(201).json({message:'usercreated'});
                 }
@@ -61,7 +61,7 @@ app.post('/login', async (req, res) => {
                 res.status(500).send()
             } else {
                 if(data[0]){//if user exist
-                    bcrypt.compare(req.body.password,data[0].password)
+                    bcrypt.compare(req.body.password.toString(),data[0].password.toString())
                     .then((e) =>{
                         if(e){
                             res.status(200).json({message:"loginsucess"})
