@@ -13,6 +13,7 @@ app.use(express.urlencoded({extended: true}))
 const port = 3000
 const url = "mongodb+srv://kasper:Kasper%402023@cluster0.r4hjwp2.mongodb.net/?retryWrites=true&w=majority"
 
+
 const corsOptions ={
    origin:'*', 
    credentials:true,     
