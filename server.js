@@ -34,7 +34,7 @@ connect();
 
 app.use(cors(corsOptions))
 
-app.post('/signin', async (req, res) => {
+app.post('/signup', async (req, res) => {
     try{
         User.find({username:req.body.username}).then((data,err) => {
             if(err){
